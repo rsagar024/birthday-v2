@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#8b2252" />
+  <title>Happy Birthday, My Love ♡</title>
+  <meta name="description" content="A little birthday surprise, made with all my heart." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500;1,700&display=swap" rel="stylesheet" />
+  <link rel="preload" as="image" href="assets/images/14-cosy-whiskers.jpg" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-locked">
+
+  <!-- ===== Ambient layers (fixed, behind / above content) ===== -->
+  <div class="bg-mesh" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+  <canvas id="particles" class="fx-canvas fx-canvas--back" aria-hidden="true"></canvas>
+  <div id="balloons" class="balloon-layer" aria-hidden="true"></div>
+  <canvas id="confetti" class="fx-canvas fx-canvas--front" aria-hidden="true"></canvas>
+
+  <!-- Background music: starts only after her first tap -->
+  <!-- REPLACE-MUSIC-URL -->
+  <audio id="bgMusic" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" loop preload="none"></audio>
+
+  <!-- ===== 1. WELCOME SURPRISE POPUP ===== -->
+  <div id="welcome" class="welcome" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="welcome__glow" aria-hidden="true"></div>
+    <div class="welcome__inner">
+      <div class="gift" aria-hidden="true">
+        <div class="gift__lid"><span class="gift__bow"><i></i><i></i></span></div>
+        <div class="gift__box"></div>
+        <span class="gift__sparkle s1">✦</span><span class="gift__sparkle s2">✧</span><span class="gift__sparkle s3">✦</span>
+      </div>
+      <p class="eyebrow">for <span data-name>My Baby❤️</span><!-- REPLACE-NAME --> · with love</p>
+      <h1 id="welcomeTitle" class="welcome__title">A little surprise is waiting for you…</h1>
+      <p class="welcome__sub">Turn your sound on, take a breath, and open it slowly.</p>
+      <button id="openSurprise" class="btn btn--primary btn--lg" type="button">
+        <span>Open the Surprise</span> <span aria-hidden="true">🎁</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== Floating controls ===== -->
+  <div class="music" id="musicPlayer">
+    <button class="music__heart" id="musicToggle" type="button" aria-label="Play our song" aria-pressed="false">
+      <svg viewBox="0 0 32 29" aria-hidden="true"><path d="M16 28.5S1 19.6 1 9.3A7.9 7.9 0 0 1 16 5.4 7.9 7.9 0 0 1 31 9.3C31 19.6 16 28.5 16 28.5z"/></svg>
+      <span class="music__icon music__icon--play" aria-hidden="true">▶</span>
+      <span class="music__icon music__icon--pause" aria-hidden="true">❚❚</span>
+    </button>
+    <button class="music__mute" id="musicMute" type="button" aria-label="Mute music" aria-pressed="false">
+      <span class="on" aria-hidden="true">🔊</span><span class="off" aria-hidden="true">🔇</span>
+    </button>
+    <span class="music__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+  </div>
+
+  <button class="fab fab--confetti" id="throwConfetti" type="button" aria-label="Throw confetti">
+    <span aria-hidden="true">🎉</span><span class="fab__label">Throw confetti</span>
+  </button>
+  <button class="fab fab--top" id="backToTop" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 32 29" aria-hidden="true"><path d="M16 28.5S1 19.6 1 9.3A7.9 7.9 0 0 1 16 5.4 7.9 7.9 0 0 1 31 9.3C31 19.6 16 28.5 16 28.5z"/></svg>
+    <span aria-hidden="true">↑</span>
+  </button>
+
+  <main id="site" class="site">
+
+    <!-- ===== 2. HERO ===== -->
+    <section class="hero" id="top" aria-label="Happy birthday">
+      <!-- REPLACE-VIDEO-1 : swap this slideshow for <video autoplay muted loop playsinline poster="..."> if you have a clip -->
+      <div class="kb kb--hero" data-kb data-interval="6000" aria-hidden="true">
+        <img src="assets/images/14-cosy-whiskers.jpg" alt="" /><!-- REPLACE-IMAGE-1 -->
+        <img src="assets/images/05-sweet-smile.jpg" alt="" loading="lazy" /><!-- REPLACE-IMAGE-2 -->
+        <img src="assets/images/18-elegant.jpg" alt="" loading="lazy" /><!-- REPLACE-IMAGE-3 -->
+      </div>
+      <div class="hero__overlay" aria-hidden="true"></div>
+      <div class="hero__hearts" id="heroHearts" aria-hidden="true"></div>
+
+      <div class="hero__content">
+        <p class="eyebrow eyebrow--light">20 · November · your day</p>
+        <p class="hero__pre">Happy Birthday,</p>
+        <h1 class="hero__name" id="heroName" data-name>My Baby❤️</h1><!-- REPLACE-NAME -->
+        <p class="hero__tag">my best friend, my favourite everything.</p>
+
+        <div class="countdown" id="countdown" aria-live="polite">
+          <div class="countdown__card"><span class="countdown__num" data-unit="d">00</span><span class="countdown__lbl">days</span></div>
+          <span class="countdown__sep" aria-hidden="true">:</span>
+          <div class="countdown__card"><span class="countdown__num" data-unit="h">00</span><span class="countdown__lbl">hours</span></div>
+          <span class="countdown__sep" aria-hidden="true">:</span>
+          <div class="countdown__card"><span class="countdown__num" data-unit="m">00</span><span class="countdown__lbl">mins</span></div>
+          <span class="countdown__sep" aria-hidden="true">:</span>
+          <div class="countdown__card"><span class="countdown__num" data-unit="s">00</span><span class="countdown__lbl">secs</span></div>
+        </div>
+        <p class="countdown__note" id="countdownNote">until the world celebrates you</p>
+      </div>
+
+      <a href="#letter" class="scroll-cue" aria-label="Scroll to the letter">
+        <span>scroll, my love</span><i aria-hidden="true"></i>
+      </a>
+    </section>
+
+    <!-- ===== 3. LOVE LETTER ===== -->
+    <section class="section letter" id="letter">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter one</p>
+        <h2 class="section__title">A letter, just for you</h2>
+        <div class="foil" aria-hidden="true"><span>♡</span></div>
+      </header>
+
+      <div class="letter__wrap">
+        <figure class="polaroid polaroid--tilt-l letter__photo reveal" data-parallax="0.06">
+          <img src="assets/images/04-love-is-you.jpg" alt="Her lying on a colourful quilt in a green tee that reads 'Love is you'" loading="lazy"
+               data-caption="“Love is you.” Your T-shirt said it first — I just agreed." /><!-- REPLACE-IMAGE-4 -->
+          <figcaption>love is you — and it's true</figcaption>
+          <span class="tape" aria-hidden="true"></span>
+        </figure>
+
+        <article class="paper reveal">
+          <p class="paper__date">20th November · 12:00 am</p>
+          <p class="paper__greet">My dearest <span data-name>baby ❤️</span>,<!-- REPLACE-NAME --></p>
+          <p class="typewriter" id="typewriter" aria-live="polite"></p>
+          <p class="paper__sign">— forever yours,<br /><span>your best friend &amp; your person</span></p>
+          <button class="btn btn--ghost" type="button" data-modal="tpl-letter">Read my full letter ✉</button>
+        </article>
+      </div>
+
+      <!-- Text the typewriter writes -->
+      <template id="typewriterText">Happy birthday to the girl who became my best friend before I even noticed, and my whole heart before I could stop it. You are my favourite hello, my safest place and the reason ordinary days feel like a festival. Today is all about you — so smile, be loud, eat too much cake, and know that you are loved more than these words can hold.</template>
+    </section>
+
+    <!-- ===== 4. PHOTO CAROUSEL + SLIDER ===== -->
+    <section class="section gallery" id="gallery">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter two</p>
+        <h2 class="section__title">All the yous I adore</h2>
+        <p class="section__lead">Twelve little frames of the girl who makes every picture prettier. Swipe, tap, stay a while.</p>
+        <div class="foil" aria-hidden="true"><span>✦</span></div>
+      </header>
+
+      <div class="carousel reveal" id="carousel" aria-roledescription="carousel" aria-label="Photo memories">
+        <div class="carousel__viewport">
+          <figure class="carousel__slide is-active">
+            <img src="assets/images/02-sunlit-daydreams.jpg" alt="Her with a maroon bow and long wavy hair in a sunny hillside village" data-caption="Sunlit daydreams — a bow in your hair and the whole village glowing behind you." /><!-- REPLACE-IMAGE-5 -->
+            <figcaption><span class="num">01</span> Sunlit daydreams</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/06-silly-cat.jpg" alt="Her goofy selfie with a cat-mask filter" loading="lazy" data-caption="Your silly side is my favourite side. Whiskers suit you, kitten." /><!-- REPLACE-IMAGE-6 -->
+            <figcaption><span class="num">02</span> Your silly side, my favourite side</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/08-smile-be-happy.jpg" alt="Her mirror selfie in a maroon 'Smile & Be Happy' tee" loading="lazy" data-caption="“Smile & be happy” — the shirt gave advice, you made it look easy." /><!-- REPLACE-IMAGE-7 -->
+            <figcaption><span class="num">03</span> Smile &amp; be happy — you always do</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/09-bubbles-teddy.jpg" alt="Her smiling with a teddy-ear filter and floating bubbles" loading="lazy" data-caption="Bubbles, teddy ears and that smile — illegal levels of cute." /><!-- REPLACE-IMAGE-8 -->
+            <figcaption><span class="num">04</span> Bubbles &amp; teddy ears</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/11-shopping-day.jpg" alt="Her mirror selfie in a green kurta and fur-hood denim jacket in a store" loading="lazy" data-caption="Shopping-day princess. Two items for ₹1000, one girl priceless." /><!-- REPLACE-IMAGE-9 -->
+            <figcaption><span class="num">05</span> Shopping-day princess</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/13-those-eyes.jpg" alt="Her wrapped in a teal scarf with only her eyes showing" loading="lazy" data-caption="Wrap yourself up all you like — I'd know those eyes anywhere." /><!-- REPLACE-IMAGE-10 -->
+            <figcaption><span class="num">06</span> I'd know those eyes anywhere</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/15-cute-pout.jpg" alt="Her pouting by a window with a garden outside" loading="lazy" data-caption="Even your pout is cute. Especially when you're pretending to be mad at me." /><!-- REPLACE-IMAGE-11 -->
+            <figcaption><span class="num">07</span> Even your pout is cute</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/16-blue-kurta.jpg" alt="Her mirror selfie in a blue printed kurta beside a teal door" loading="lazy" data-caption="Blue kurta, braided hair, golden heart." /><!-- REPLACE-IMAGE-12 -->
+            <figcaption><span class="num">08</span> Blue kurta, golden heart</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/19-looking-up.jpg" alt="Her curly-haired outdoor selfie looking up with a soft smile" loading="lazy" data-caption="Looking up at the sky the way I look up to you." /><!-- REPLACE-IMAGE-13 -->
+            <figcaption><span class="num">09</span> Looking up, like I look up to you</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/12-hide-and-seek.jpg" alt="Her mirror selfie with the phone hiding her face, framed like film" loading="lazy" data-caption="Hide behind the phone all you want — I still see you. Always." /><!-- REPLACE-IMAGE-14 -->
+            <figcaption><span class="num">10</span> Hide all you want — I see you</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/03-thinking-of.jpg" alt="Her with a finger on her chin, thinking, in a flower garden" loading="lazy" data-caption="What are you thinking about? (Please say me.)" /><!-- REPLACE-IMAGE-15 -->
+            <figcaption><span class="num">11</span> What are you thinking about?</figcaption>
+          </figure>
+          <figure class="carousel__slide">
+            <img src="assets/images/24-moody.jpg" alt="Close-up of her red lips and a fur-hood blue jacket" loading="lazy" data-caption="Red lips, fur hood, main-character energy. Moody & magnificent." /><!-- REPLACE-IMAGE-16 -->
+            <figcaption><span class="num">12</span> Moody &amp; magnificent</figcaption>
+          </figure>
+        </div>
+        <button class="carousel__arrow carousel__arrow--prev" type="button" aria-label="Previous photo">‹</button>
+        <button class="carousel__arrow carousel__arrow--next" type="button" aria-label="Next photo">›</button>
+        <div class="carousel__dots" role="tablist" aria-label="Choose photo"></div>
+        <div class="carousel__progress" aria-hidden="true"><i></i></div>
+      </div>
+
+      <h3 class="sub-title reveal">Pinned to my heart <span class="hint">← drag →</span></h3>
+      <div class="drag-slider reveal" id="dragSlider">
+        <div class="drag-slider__track">
+          <figure class="polaroid polaroid--tilt-r">
+            <img src="assets/images/05-sweet-smile.jpg" alt="Her curly hair and warm smile, chin in hand" loading="lazy" draggable="false" data-caption="That smile. The one that fixes my worst days in a second." /><!-- REPLACE-IMAGE-17 -->
+            <figcaption>the smile that fixes my day</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-l">
+            <img src="assets/images/18-elegant.jpg" alt="Her elegant portrait with red lips and long black hair" loading="lazy" draggable="false" data-caption="Effortlessly elegant — how do you do that without even trying?" /><!-- REPLACE-IMAGE-18 -->
+            <figcaption>effortlessly elegant</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-r">
+            <img src="assets/images/21-lazy-sunday.jpg" alt="Her lying on a red plaid blanket, looking at the camera" loading="lazy" draggable="false" data-caption="Fearlessly authentic — lazy Sundays on the plaid blanket, just being you." /><!-- REPLACE-IMAGE-19 -->
+            <figcaption>fearlessly authentic</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-l">
+            <img src="assets/images/22-everyday.jpg" alt="Her selfie in a brown jacket with a purple backpack" loading="lazy" draggable="false" data-caption="Ordinary days, extraordinary you. Backpack, jacket, my whole world." /><!-- REPLACE-IMAGE-20 -->
+            <figcaption>ordinary days, extraordinary you</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-r">
+            <img src="assets/images/23-rooftop-calls.jpg" alt="Her rooftop selfie at golden hour with an earbud in" loading="lazy" draggable="false" data-caption="Golden hour on the rooftop, one earbud in — I bet I was on the other end." /><!-- REPLACE-IMAGE-21 -->
+            <figcaption>rooftop golden hour</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-l">
+            <img src="assets/images/10-fireflies.jpg" alt="Her playful selfie with a hand sign, fireflies outside the window" loading="lazy" draggable="false" data-caption="Peekaboo at twilight, with fireflies for company." /><!-- REPLACE-IMAGE-22 -->
+            <figcaption>peekaboo at twilight</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-r">
+            <img src="assets/images/14-cosy-whiskers.jpg" alt="Her tucked under a blanket with drawn-on cat whiskers" loading="lazy" draggable="false" data-caption="Cosy whiskers, sleepy eyes — my favourite kind of night in." /><!-- REPLACE-IMAGE-23 -->
+            <figcaption>cosy whiskers, sleepy eyes</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-l">
+            <img src="assets/images/09-bubbles-teddy.jpg" alt="Her smiling with bubbles and teddy ears" loading="lazy" draggable="false" data-caption="Soft, silly and sunshine-bright." /><!-- REPLACE-IMAGE-24 -->
+            <figcaption>sunshine in a selfie</figcaption>
+          </figure>
+          <figure class="polaroid polaroid--tilt-r">
+            <img src="assets/images/01-with-brother.jpg" alt="Her playfully hiding her face outside an old village tea shop, her brother sitting in front with a camera" loading="lazy" draggable="false" data-caption="You & your brother at the old tea shop — him posing like a pro, you hiding from the camera. Classic sibling energy." /><!-- REPLACE-IMAGE-51 -->
+            <figcaption>you &amp; your brother</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 5. VIDEO MEMORIES (photo slideshows standing in for videos) ===== -->
+    <section class="section memories" id="memories">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter three</p>
+        <h2 class="section__title">Moving memories</h2>
+        <p class="section__lead">Little reels of us. Tap any one to pause the moment.</p>
+        <div class="foil" aria-hidden="true"><span>❀</span></div>
+      </header>
+
+      <div class="memories__grid">
+        <!-- REPLACE-VIDEO-2 -->
+        <figure class="reel reel--featured reveal" data-kb-toggle>
+          <div class="kb" data-kb data-interval="5000">
+            <img src="assets/images/07-river-ride.jpg" alt="The two of us walking a path to the river on a Sunday" loading="lazy" /><!-- REPLACE-IMAGE-25 -->
+            <img src="assets/images/17-first-trip.jpg" alt="Friends sitting on river rocks in green hills" loading="lazy" /><!-- REPLACE-IMAGE-26 -->
+            <img src="assets/images/30-sunny-walk.jpg" alt="A happy selfie of us under big trees" loading="lazy" /><!-- REPLACE-IMAGE-27 -->
+          </div>
+          <span class="reel__badge"><i></i> playing</span>
+          <figcaption><strong>Our little adventures</strong><span>rivers, rides &amp; sunny walks</span></figcaption>
+        </figure>
+        <!-- REPLACE-VIDEO-3 -->
+        <figure class="reel reveal" data-kb-toggle>
+          <div class="kb" data-kb data-interval="4200">
+            <img src="assets/images/26-palms.jpg" alt="Our palms touching over a garden" loading="lazy" /><!-- REPLACE-IMAGE-28 -->
+            <img src="assets/images/28-holding-hands.jpg" alt="Our hands loosely intertwined" loading="lazy" /><!-- REPLACE-IMAGE-29 -->
+          </div>
+          <span class="reel__badge"><i></i> playing</span>
+          <figcaption><strong>Hands that found home</strong></figcaption>
+        </figure>
+        <!-- REPLACE-VIDEO-4 -->
+        <figure class="reel reveal" data-kb-toggle>
+          <div class="kb" data-kb data-interval="4600">
+            <img src="assets/images/27-first-meetup.jpg" alt="Our hands clasped at our first meetup, her red thread bracelet showing" loading="lazy" /><!-- REPLACE-IMAGE-30 -->
+            <img src="assets/images/29-hand-in-hand.jpg" alt="Hands tightly clasped with a braided friendship bracelet" loading="lazy" /><!-- REPLACE-IMAGE-31 -->
+          </div>
+          <span class="reel__badge"><i></i> playing</span>
+          <figcaption><strong>Quiet, tender moments</strong></figcaption>
+        </figure>
+        <!-- REPLACE-VIDEO-5 -->
+        <figure class="reel reveal" data-kb-toggle>
+          <div class="kb" data-kb data-interval="5200">
+            <img src="assets/images/25-best-friend-to-love.jpg" alt="Her resting her head on my shoulder under sunlit trees" loading="lazy" /><!-- REPLACE-IMAGE-32 -->
+            <img src="assets/images/31-first-walks.jpg" alt="Us walking under the trees, sharing earbuds" loading="lazy" /><!-- REPLACE-IMAGE-33 -->
+          </div>
+          <span class="reel__badge"><i></i> playing</span>
+          <figcaption><strong>You &amp; me, under the trees</strong></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ===== 6. MEMORY TIMELINE ===== -->
+    <section class="section timeline-sec" id="timeline">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter four</p>
+        <h2 class="section__title">Our story, so far</h2>
+        <p class="section__lead">From a nervous first meetup to the two people who know each other's every silly secret.</p>
+        <div class="foil" aria-hidden="true"><span>✧</span></div>
+      </header>
+
+      <ol class="timeline">
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">♡</span>
+          <div class="tl-card">
+            <span class="tl-card__date">Day one<!-- REPLACE-DATE-1 --></span>
+            <img src="assets/images/27-first-meetup.jpg" alt="Our hands clasped on the day of our first meetup, her red thread bracelet showing" loading="lazy" data-caption="Our first meetup — nervous hearts, a red thread on your wrist, and two hands that didn't want to let go." /><!-- REPLACE-IMAGE-34 -->
+            <h3>Our first meetup</h3>
+            <p>A quiet brick path, nervous smiles, the red thread on your wrist — and somehow our hands found each other before our words did. Neither of us knew this was the beginning of everything.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">✎</span>
+          <div class="tl-card">
+            <span class="tl-card__date">The college days<!-- REPLACE-DATE-2 --></span>
+            <img src="assets/images/20-college-days.jpg" alt="Her classroom selfie with a navy backpack" loading="lazy" data-caption="College days — same benches, same backpacks, endless selfies between lectures." /><!-- REPLACE-IMAGE-35 -->
+            <h3>Same benches, same jokes</h3>
+            <p>Lectures I don't remember, but every selfie you sent from the back row I do. That's when "friend" started feeling too small a word.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">♫</span>
+          <div class="tl-card">
+            <span class="tl-card__date">First walks<!-- REPLACE-DATE-3 --></span>
+            <img src="assets/images/31-first-walks.jpg" alt="Us walking under trees, me with earbuds and her head on my shoulder" loading="lazy" data-caption="Long walks and one pair of earbuds between us." /><!-- REPLACE-IMAGE-36 -->
+            <h3>Long walks, shared earbuds</h3>
+            <p>One playlist, two people, roads that somehow always got longer when you were walking beside me.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">✋</span>
+          <div class="tl-card">
+            <span class="tl-card__date">That one evening<!-- REPLACE-DATE-4 --></span>
+            <img src="assets/images/28-holding-hands.jpg" alt="Our hands intertwined over a garden" loading="lazy" data-caption="The first time our hands found each other — and decided to stay." /><!-- REPLACE-IMAGE-37 -->
+            <h3>First time holding hands</h3>
+            <p>No big speech, no fireworks — just your fingers slipping into mine like they'd always known the way.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">❤</span>
+          <div class="tl-card">
+            <span class="tl-card__date">The turning point<!-- REPLACE-DATE-5 --></span>
+            <img src="assets/images/25-best-friend-to-love.jpg" alt="Her head resting on my shoulder as I take a selfie under sunlit trees" loading="lazy" data-caption="When best friend became love — your head on my shoulder, my heart on my sleeve." /><!-- REPLACE-IMAGE-38 -->
+            <h3>When best friend became love</h3>
+            <p>Your head on my shoulder, sunlight through the leaves, and the quiet realisation that my best friend was also the love of my life.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">⛰</span>
+          <div class="tl-card">
+            <span class="tl-card__date">Our first trip<!-- REPLACE-DATE-6 --></span>
+            <img src="assets/images/17-first-trip.jpg" alt="Friends sitting on rocks by a river in green hills" loading="lazy" data-caption="Our first trip — cold river, warm hearts, the whole gang together." /><!-- REPLACE-IMAGE-39 -->
+            <h3>Our first trip</h3>
+            <p>Green hills, freezing river water, the whole gang on the rocks — and me looking at you more than the view.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">☀</span>
+          <div class="tl-card">
+            <span class="tl-card__date">Sunday · 12:24 pm<!-- REPLACE-DATE-7 --></span>
+            <img src="assets/images/07-river-ride.jpg" alt="The two of us walking down a path toward a river, bikes parked behind" loading="lazy" data-caption="Sunday rides to the river — parked the bikes, kept walking, didn't want it to end." /><!-- REPLACE-IMAGE-40 -->
+            <h3>Sunday rides to the river</h3>
+            <p>Bikes parked, shoes dusty, hands swinging between us. The best Sundays were the ones with no plan except you.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">☾</span>
+          <div class="tl-card">
+            <span class="tl-card__date">Every night since<!-- REPLACE-DATE-8 --></span>
+            <img src="assets/images/23-rooftop-calls.jpg" alt="Her on a rooftop at dusk with one earbud in" loading="lazy" data-caption="Countless midnight calls — 'you hang up first' 'no, you'." /><!-- REPLACE-IMAGE-41 -->
+            <h3>Countless midnight calls</h3>
+            <p>"You hang up first." "No, you." Rooftops, earbuds, sleepy voices at 2 am — my favourite conversations are the ones that never really end.</p>
+          </div>
+        </li>
+        <li class="tl-item reveal">
+          <span class="tl-item__dot" aria-hidden="true">∞</span>
+          <div class="tl-card">
+            <span class="tl-card__date">Today &amp; always</span>
+            <img src="assets/images/30-sunny-walk.jpg" alt="A sunny selfie of us smiling under big trees" loading="lazy" data-caption="Still choosing you. Every single day." /><!-- REPLACE-IMAGE-42 -->
+            <h3>Still choosing you</h3>
+            <p>Best friend on the hard days, my love on all the days. Every single morning, I'd choose you again.</p>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===== 7. WISHES WALL ===== -->
+    <section class="section wishes" id="wishes">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter five</p>
+        <h2 class="section__title">The wishes wall</h2>
+        <p class="section__lead">Everyone who loves you left a little note. Tap one to read it in full.</p>
+        <div class="foil" aria-hidden="true"><span>✉</span></div>
+      </header>
+
+      <div class="board" id="wishBoard">
+        <button class="note note--polaroid reveal" type="button" data-from="Riya" data-msg="Happy birthday, gorgeous! Thank you for being the person who laughs the loudest at my worst jokes. May this year be as warm and bright as your smile. Love you forever!">
+          <img src="assets/images/05-sweet-smile.jpg" alt="Her warm smile" loading="lazy" /><!-- REPLACE-IMAGE-43 -->
+          <span class="note__text">May this year be as bright as your smile ☀</span><span class="note__from">— Riya<!-- REPLACE-FRIEND-1 --></span>
+        </button>
+        <button class="note note--yellow reveal" type="button" data-from="Aarav" data-msg="To the kindest heart in our whole group — happy birthday! You make every plan better just by showing up. Here's to more trips, more chai and more of your terrible singing in the car.">
+          <span class="note__text">More trips, more chai, more terrible car singing! 🚗</span><span class="note__from">— Aarav<!-- REPLACE-FRIEND-2 --></span>
+        </button>
+        <button class="note note--pink reveal" type="button" data-from="Mom-in-spirit, Neha" data-msg="Sweetheart, you have grown into such a beautiful soul. Never stop being this gentle and this strong at the same time. Happy birthday, darling.">
+          <span class="note__text">Never stop being this gentle &amp; this strong ♡</span><span class="note__from">— Neha<!-- REPLACE-FRIEND-3 --></span>
+        </button>
+        <button class="note note--polaroid reveal" type="button" data-from="Ishita" data-msg="Bubbles, teddy filters and 400 selfies a day — never change! Happy birthday to my favourite drama queen. Can't wait to celebrate you properly!">
+          <img src="assets/images/09-bubbles-teddy.jpg" alt="Her bubbly teddy-ear selfie" loading="lazy" /><!-- REPLACE-IMAGE-44 -->
+          <span class="note__text">400 selfies a day — never change! 📸</span><span class="note__from">— Ishita<!-- REPLACE-FRIEND-4 --></span>
+        </button>
+        <button class="note note--blue reveal" type="button" data-from="Kabir" data-msg="Happy birthday! Thanks for keeping this guy sane (mostly). You two are honestly the cutest best-friends-turned-couple I know. Have the best day!">
+          <span class="note__text">Thanks for keeping this guy sane (mostly) 😂</span><span class="note__from">— Kabir<!-- REPLACE-FRIEND-5 --></span>
+        </button>
+        <button class="note note--yellow reveal" type="button" data-from="Sneha" data-msg="Happiest birthday to the girl with the biggest heart and the most beautiful hair in the universe. I hope every single wish you make today comes true — and then some.">
+          <span class="note__text">Every wish you make — may it come true ✨</span><span class="note__from">— Sneha<!-- REPLACE-FRIEND-6 --></span>
+        </button>
+        <button class="note note--polaroid reveal" type="button" data-from="Tanya" data-msg="Looking up at you, always. You inspire me more than you'll ever know — your courage, your kindness, your laugh. Happy birthday, babe!">
+          <img src="assets/images/19-looking-up.jpg" alt="Her looking up with a soft smile" loading="lazy" /><!-- REPLACE-IMAGE-45 -->
+          <span class="note__text">You inspire me more than you know 🌿</span><span class="note__from">— Tanya<!-- REPLACE-FRIEND-7 --></span>
+        </button>
+        <button class="note note--pink reveal" type="button" data-from="Rohan" data-msg="Happy birthday! May your year be full of good food, long naps, surprise parcels and zero Monday mornings. You deserve all of it.">
+          <span class="note__text">Good food, long naps, zero Mondays 🍰</span><span class="note__from">— Rohan<!-- REPLACE-FRIEND-8 --></span>
+        </button>
+        <button class="note note--blue reveal" type="button" data-from="Meera" data-msg="Remember when we got lost and you made it the best day ever anyway? That's you — you turn every wrong turn into an adventure. Happy birthday, my sunshine.">
+          <span class="note__text">You turn every wrong turn into an adventure 🗺</span><span class="note__from">— Meera<!-- REPLACE-FRIEND-9 --></span>
+        </button>
+        <button class="note note--polaroid reveal" type="button" data-from="Him (yes, me)" data-msg="I hold your hand in every crowd and in every quiet room. I'll keep holding it — through every birthday after this one. Happy birthday, my love.">
+          <img src="assets/images/27-first-meetup.jpg" alt="Our hands clasped together at our first meetup" loading="lazy" /><!-- REPLACE-IMAGE-46 -->
+          <span class="note__text">I'll keep holding your hand. Always. ♡</span><span class="note__from">— me</span>
+        </button>
+        <button class="note note--yellow reveal" type="button" data-from="Dev" data-msg="Happy birthday to the official group photographer, planner and therapist. We'd be lost without you. Party's on us this time!">
+          <span class="note__text">Party's on us this time! 🎈</span><span class="note__from">— Dev<!-- REPLACE-FRIEND-10 --></span>
+        </button>
+        <button class="note note--pink reveal" type="button" data-from="Ananya" data-msg="To my forever partner-in-crime: happy birthday! Here's to more late-night gossip, mirror selfies in changing rooms and laughing until we cry.">
+          <span class="note__text">More mirror selfies &amp; laughing till we cry 💕</span><span class="note__from">— Ananya<!-- REPLACE-FRIEND-11 --></span>
+        </button>
+      </div>
+
+      <form class="wish-form glass reveal" id="wishForm" autocomplete="off">
+        <h3>Write a wish ✎</h3>
+        <p>Add your own little note — it'll stay pinned on this board.</p>
+        <div class="wish-form__row">
+          <input type="text" id="wishName" maxlength="30" placeholder="Your name" aria-label="Your name" required />
+          <textarea id="wishText" maxlength="220" rows="3" placeholder="Your birthday wish…" aria-label="Your birthday wish" required></textarea>
+          <button class="btn btn--primary" type="submit">Pin my wish 📌</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ===== 8. BIRTHDAY CAKE ===== -->
+    <section class="section cake-sec" id="cake">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter six</p>
+        <h2 class="section__title">Close your eyes &amp; make a wish</h2>
+        <div class="foil" aria-hidden="true"><span>🕯</span></div>
+      </header>
+
+      <div class="cake-stage reveal">
+        <div class="cake" id="cakeEl" aria-hidden="true">
+          <div class="candles">
+            <div class="candle"><span class="flame"></span><span class="smoke"><i></i><i></i><i></i></span></div>
+            <div class="candle"><span class="flame"></span><span class="smoke"><i></i><i></i><i></i></span></div>
+            <div class="candle"><span class="flame"></span><span class="smoke"><i></i><i></i><i></i></span></div>
+            <div class="candle"><span class="flame"></span><span class="smoke"><i></i><i></i><i></i></span></div>
+            <div class="candle"><span class="flame"></span><span class="smoke"><i></i><i></i><i></i></span></div>
+          </div>
+          <div class="tier tier--top"><span class="drip"></span><span class="cake__hearts">♡ ♡ ♡</span></div>
+          <div class="tier tier--mid"><span class="drip"></span><span class="cake__text">happy birthday</span></div>
+          <div class="tier tier--base"><span class="drip"></span><span class="cake__dots"></span></div>
+          <div class="plate"></div>
+        </div>
+        <button class="btn btn--primary btn--lg" id="makeWish" type="button">Make a Wish ✨</button>
+      </div>
+    </section>
+
+    <!-- ===== 9. GAMES & SURPRISES ===== -->
+    <section class="section games" id="games">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter seven</p>
+        <h2 class="section__title">Little games &amp; surprises</h2>
+        <p class="section__lead">Scratch, tap, unwrap. Every one of these is a promise.</p>
+        <div class="foil" aria-hidden="true"><span>🎁</span></div>
+      </header>
+
+      <div class="games__grid">
+        <div class="scratch reveal">
+          <h3 class="sub-title">Scratch to reveal your surprise</h3>
+          <div class="scratch__card" id="scratchCard">
+            <div class="scratch__hidden">
+              <img src="assets/images/26-palms.jpg" alt="Our palms pressed together" loading="lazy" /><!-- REPLACE-IMAGE-47 -->
+              <p>Palm to palm, heart to heart —<br /><strong>you're stuck with me for every birthday after this one.</strong></p>
+            </div>
+            <canvas class="scratch__canvas" aria-label="Scratch area — rub with your finger or mouse"></canvas>
+          </div>
+          <p class="hint" id="scratchHint">use your finger or mouse ✦</p>
+        </div>
+
+        <div class="gifts reveal">
+          <h3 class="sub-title">Pick a gift, any gift</h3>
+          <div class="gifts__row">
+            <button class="gift-box" type="button" data-coupon="hug" aria-label="Open gift one">
+              <span class="gift-box__lid"></span><span class="gift-box__body"></span><span class="gift-box__tag">1</span>
+            </button>
+            <button class="gift-box gift-box--gold" type="button" data-coupon="date" aria-label="Open gift two">
+              <span class="gift-box__lid"></span><span class="gift-box__body"></span><span class="gift-box__tag">2</span>
+            </button>
+            <button class="gift-box gift-box--wine" type="button" data-coupon="bff" aria-label="Open gift three">
+              <span class="gift-box__lid"></span><span class="gift-box__body"></span><span class="gift-box__tag">3</span>
+            </button>
+          </div>
+          <p class="hint">tap a box to unwrap it</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 10. REASONS I LOVE YOU ===== -->
+    <section class="section reasons" id="reasons">
+      <header class="section__head reveal">
+        <p class="eyebrow">chapter eight</p>
+        <h2 class="section__title">Reasons I love you</h2>
+        <div class="foil" aria-hidden="true"><span>♡</span></div>
+      </header>
+
+      <div class="marquee" aria-hidden="true">
+        <div class="marquee__track">
+          <span>you are my safe place • my favourite hello • my hardest goodbye • my 2 am phone call • my partner in crime • my calm in every storm • the best part of my day • </span>
+          <span>you are my safe place • my favourite hello • my hardest goodbye • my 2 am phone call • my partner in crime • my calm in every storm • the best part of my day • </span>
+        </div>
+      </div>
+
+      <div class="flip-grid">
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>01</b>tap me</span><span class="flip__back">The way you hide your face when you laugh too hard.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>02</b>tap me</span><span class="flip__back">You're my best friend first — and that's what makes us unbreakable.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>03</b>tap me</span><span class="flip__back">Your silly filters and sillier voice notes.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>04</b>tap me</span><span class="flip__back">How you look up at the sky like it owes you a story.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>05</b>tap me</span><span class="flip__back">Your hand fits in mine like it was measured for it.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>06</b>tap me</span><span class="flip__back">You stay on the call even when we've run out of words.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>07</b>tap me</span><span class="flip__back">You pout when you're mad, and I melt every time.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>08</b>tap me</span><span class="flip__back">You make the most ordinary afternoons feel like holidays.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>09</b>tap me</span><span class="flip__back">You believe in me on the days I don't.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>10</b>tap me</span><span class="flip__back">Your head on my shoulder is my favourite weight in the world.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>11</b>tap me</span><span class="flip__back">You're fearlessly, beautifully, completely yourself.</span></span></button>
+        <button class="flip reveal" type="button"><span class="flip__inner"><span class="flip__front"><b>12</b>tap me</span><span class="flip__back">Because it's you. It was always going to be you.</span></span></button>
+      </div>
+    </section>
+
+    <!-- ===== 11. GRAND FINALE ===== -->
+    <section class="finale" id="finale">
+      <img class="finale__bg" src="assets/images/29-hand-in-hand.jpg" alt="" loading="lazy" data-parallax="-0.08" /><!-- REPLACE-IMAGE-48 -->
+      <div class="finale__overlay" aria-hidden="true"></div>
+      <div class="finale__content reveal">
+        <p class="eyebrow eyebrow--light">hand in hand, always</p>
+        <h2 class="finale__title">Happy Birthday,<br /><span data-name>My Baby❤️</span><!-- REPLACE-NAME --></h2>
+        <p class="finale__sub">Thank you for being born. Thank you for choosing me back.</p>
+        <button class="btn btn--primary btn--lg" id="lastThing" type="button">One last thing… 💌</button>
+      </div>
+    </section>
+
+    <!-- ===== 12. FOOTER ===== -->
+    <footer class="footer">
+      <div class="foil" aria-hidden="true"><span>♡</span></div>
+      <p class="footer__love">Made with all my heart, just for you.</p>
+      <div class="footer__controls">
+        <button class="btn btn--ghost btn--sm" type="button" data-music="toggle">♫ Play / Pause</button>
+        <button class="btn btn--ghost btn--sm" type="button" data-music="mute">🔈 Mute / Unmute</button>
+      </div>
+      <p class="footer__meta">20 · 11 · forever</p>
+    </footer>
+  </main>
+
+  <!-- ===== Generic popup ===== -->
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal__backdrop" data-close></div>
+    <div class="modal__panel" tabindex="-1">
+      <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
+      <div class="modal__body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- ===== Lightbox ===== -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Photo viewer">
+    <div class="modal__backdrop" data-close></div>
+    <figure class="lightbox__figure">
+      <img id="lbImg" src="" alt="" />
+      <figcaption id="lbCap"></figcaption>
+    </figure>
+    <button class="modal__close" type="button" data-close aria-label="Close">✕</button>
+    <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous photo">‹</button>
+    <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next photo">›</button>
+    <span class="lightbox__count" id="lbCount"></span>
+  </div>
+
+  <!-- ===== Popup templates ===== -->
+  <template id="tpl-letter">
+    <div class="paper paper--modal">
+      <p class="paper__date">a letter I've rewritten a hundred times</p>
+      <h3 class="modal__title">My dearest <span data-name>baby ❤️</span>,<!-- REPLACE-NAME --></h3>
+      <p>Happy birthday, my love. I've tried to put you into words so many times, and every time the words come out too small.</p>
+      <p>Do you remember our first meetup? Two nervous people on a quiet path, your red thread bracelet, my hand finding yours — and somewhere between that shy hello and a hundred late-night calls, you became my best friend. I didn't notice when it turned into love. I only noticed that every good thing in my day now had your name on it.</p>
+      <p>You are the girl with the bow in her hair and the cat filter on her face. You are the pout when you're annoyed and the laugh you can't hold in. You are long walks with shared earbuds, Sunday rides to the river, and the warm weight of your head on my shoulder. You are home.</p>
+      <p>Thank you for being my safe place on the hard days and my favourite adventure on the easy ones. Thank you for letting me be both — your best friend and your person.</p>
+      <p>On this birthday, I wish you the softest mornings, the loudest laughter, dreams that come true faster than you expect, and a heart that always knows how deeply it is loved. And if you ever forget, I'll be right here to remind you — every day, every year, every birthday.</p>
+      <p class="paper__sign">Forever and always yours,<br /><span>your best friend &amp; your boyfriend ♡</span></p>
+    </div>
+  </template>
+
+  <template id="tpl-wish">
+    <div class="popup-center">
+      <img class="popup-photo" src="assets/images/05-sweet-smile.jpg" alt="Her warm, happy smile" /><!-- REPLACE-IMAGE-49 -->
+      <h3 class="modal__title">Your wish is on its way ✨</h3>
+      <p>The candles carried it straight up to the stars. I don't know what you wished for — but I promise to spend this whole year helping it come true.</p>
+      <p class="script-line">Happy birthday, beautiful.</p>
+    </div>
+  </template>
+
+  <template id="tpl-coupon-hug">
+    <div class="coupon">
+      <span class="coupon__kicker">coupon · no expiry</span>
+      <span class="coupon__emoji">🤗</span>
+      <h3>One big hug</h3>
+      <p>Redeemable anytime, anywhere, for as long as you want. Extra squeeze included free of charge.</p>
+      <span class="coupon__code">CODE: HUG-4EVER</span>
+    </div>
+  </template>
+  <template id="tpl-coupon-date">
+    <div class="coupon coupon--gold">
+      <span class="coupon__kicker">coupon · you choose</span>
+      <span class="coupon__emoji">🌹</span>
+      <h3>A date of your choice</h3>
+      <p>A walk down the path where we first met, a ride to the river, or a movie night with blankets — you pick, I plan, you just show up looking cute.</p>
+      <span class="coupon__code">CODE: YOU-PICK</span>
+    </div>
+  </template>
+  <template id="tpl-coupon-bff">
+    <div class="coupon coupon--wine">
+      <span class="coupon__kicker">lifetime membership</span>
+      <span class="coupon__emoji">💞</span>
+      <h3>Forever best friend card</h3>
+      <p>Valid for unlimited gossip sessions, 2 am calls, honest opinions on outfits and one shoulder to lean on — for life.</p>
+      <span class="coupon__code">CODE: BFF-FOREVER</span>
+    </div>
+  </template>
+
+  <template id="tpl-final">
+    <div class="popup-center final-msg">
+      <img class="popup-photo" src="assets/images/29-hand-in-hand.jpg" alt="Our hands tightly clasped, a friendship bracelet on her wrist" /><!-- REPLACE-IMAGE-50 -->
+      <h3 class="modal__title">One last thing…</h3>
+      <p>Out of every person in this whole wide world, I got to have you — as my best friend <em>and</em> as my love. Some people spend their lives searching for one of those. I found both in one beautiful, silly, kind, stubborn girl.</p>
+      <p>So whatever this year brings, remember: you never have to face anything alone. My hand is in yours. It always will be.</p>
+      <p class="script-line">I love you. Happy birthday. ♡</p>
+    </div>
+  </template>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

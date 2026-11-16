@@ -1,0 +1,13 @@
+# Large original images (optimized copies live in assets/images)
+photos/
+
+# Original build prompt
+prompt.txt
+
+# OS / editor clutter
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Instagram story designs (kept local)
+story/
